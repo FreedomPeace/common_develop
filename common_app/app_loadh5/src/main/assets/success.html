@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>验票终端</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="pd16" >
+        <div class="success-tips">
+            <img class="success-icon" src="./images/icon3.png" alt="">
+            <p class="h5">核销成功!</p>
+        </div>
+        <div class="routebox">
+            <div class="routebox-input input-start">
+              <div class="label">出发港</div>
+              <div class="value">长兴岛</div>
+            </div>
+            <div class="routebox-revert">
+              <img src="./images/icon4.png" alt="">
+              <div class="block">单程</div>
+            </div>
+            <div class="routebox-input input-end">
+              <div class="label">到达港</div>
+              <div class="value">横沙岛</div>
+            </div>
+          </div>
+          <div class="form-data">
+              <div class="item">
+                  <div class="label">票务类型：</div>
+                  <div class="value">人员购票</div>
+              </div>
+              <div class="item">
+                  <div class="label">出发日期：</div>
+                  <div class="value">2021.03.08 周一</div>
+              </div>
+              <div class="item">
+                  <div class="label">轮渡类型：</div>
+                  <div class="value">普通轮渡</div>
+              </div>
+              <div class="item">
+                  <div class="label">乘客人数：</div>
+                  <div class="value">半票1人；全票1人</div>
+              </div>
+              <div class="item">
+                  <div class="label">订单价格：</div>
+                  <div class="value">￥8元</div>
+              </div>
+          </div>
+    </div>
+    <div class="pd16" style="display: none;">
+        <div class="success-tips">
+            <img class="success-icon" src="./images/icon5.png" alt="">
+            <p class="h5 red">核销失败!</p>
+        </div>
+        <div class="errormsg">
+            <p>失败原因</p>
+            <p class="red">票务信息不存在！</p>
+        </div>
+    </div>
+</body>
+</html>

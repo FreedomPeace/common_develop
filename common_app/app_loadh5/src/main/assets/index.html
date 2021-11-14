@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>验票终端</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="pd16">
+        <div class="h5">长横对江渡客运票务核销系统</div>
+        <img class="theme-icon" src="./images/theme-icon.jpg" alt="">
+        <div class="inde-btn-area pd16" >
+            <div type="button" onclick="qrcode()"  class="btn mt10"><img src="./images/icon1.png">扫码核销</div>
+            <p style="width:100%;height:120">二维码内容如下:</p>
+            <div id="demo" style="width:100%;height:80">xxxxxx</div>
+        </div>
+    </div>
+    <script>
+    function qrcode()
+    {
+        window.ObjForJs.qrcode();
+    }
+    function showFromAndroid(path)
+    {
+        document.getElementById("demo").innerHTML=path;
+
+    }
+
+    </script>
+
+
+</body>
+</html>
