@@ -12,21 +12,33 @@
         <div class="h5">长横对江渡客运票务核销系统</div>
         <img class="theme-icon" src="./images/theme-icon.jpg" alt="">
         <div class="inde-btn-area pd16" >
-            <div type="button" onclick="qrcode()"  class="btn mt10"><img src="./images/icon1.png">扫码核销</div>
+            <div type="button" onclick="startQrcode()"  class="btn mt10"><img src="./images/icon1.png">扫码核销</div>
+            <div type="button" onclick="getImei()"  class="btn mt10"><img src="./images/icon1.png">获取Imei</div>
             <p style="width:100%;height:120">二维码内容如下:</p>
             <div id="demo" style="width:100%;height:80">xxxxxx</div>
+            <p style="width:100%;height:120">imei号:</p>
+            <div id="imei" style="width:100%;height:80">xxxxxx</div>
         </div>
     </div>
     <script>
-    function qrcode()
+    function startQrcode()
     {
-        window.ObjForJs.qrcode();
+    //H5 端的按钮 调用安卓的扫码
+        window.ObjForJs.startQrcode();
     }
-    function showFromAndroid(path)
+    function callbackFromQrcode(code)
     {
-        document.getElementById("demo").innerHTML=path;
+    //android设备端 扫完码，或者红外线，会回调此方法，
+        document.getElementById("demo").innerHTML=code;
 
     }
+    function getImei()
+    {
+    //获取imei
+      var imei =   window.ObjForJs.getImei();
+      document.getElementById("imei").innerHTML=imei;
+    }
+
 
     </script>
 

@@ -45,7 +45,7 @@ public class WebViewActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 //网页加载完之后，android调用js方法
 //                String msg ="展示内容";
-//                webView.loadUrl("javascript:showFromAndroid('"+msg+"')");
+//                webView.loadUrl("javascript:callbackFromQrcode('"+msg+"')");
                 super.onPageFinished(view, url);
 
             }
@@ -120,7 +120,7 @@ public class WebViewActivity extends AppCompatActivity {
             if (intent.getAction().equals(RES_ACTION)) {
                 //获取扫描结果
                 if (scanResult.length() > 0) { //如果条码长度>0，解码成功。如果条码长度等于0解码失败。
-                    webView.loadUrl("javascript:showFromAndroid('" + scanResult + "')");
+                    webView.loadUrl("javascript:callbackFromQrcode('" + scanResult + "')");
                 } else {
                     /**扫描失败提示使用有两个条件：
                      1，需要先将扫描失败提示接口打开只能在广播模式下使用，其他模式无法调用。
@@ -141,8 +141,12 @@ public class WebViewActivity extends AppCompatActivity {
 
         //api17以后，只有public且添加了 @JavascriptInterface 注解的方法才能被调用
         @JavascriptInterface
-        public void qrcode() {
+        public void startQrcode() {
             startActivityForResult(new Intent(WebViewActivity.this, QRActivity.class), REQUEST_CAMERA);
+        }
+        @JavascriptInterface
+        public String getImei() {
+           return  PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
         }
 
     }
@@ -165,7 +169,7 @@ public class WebViewActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CAMERA:
                 String qrcode = data.getStringExtra("qrcode");
-                webView.loadUrl("javascript:showFromAndroid('" + qrcode + "')");
+                webView.loadUrl("javascript:callbackFromQrcode('" + qrcode + "')");
                 break;
 
         }
