@@ -42,6 +42,7 @@ class ApplyAlsoLetRunWith {
         println("run")
         var str0 = str.run {
             this.length
+            print(66)
             UInt
         }
         println(str0)

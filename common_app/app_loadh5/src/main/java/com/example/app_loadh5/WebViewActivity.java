@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -57,11 +58,13 @@ public class WebViewActivity extends AppCompatActivity {
         //设置编码方式
         webSettings.setDefaultTextEncodingName("utf-8");
         webSettings.setJavaScriptEnabled(true);  //开启js
+        webSettings.setAppCacheEnabled(true);
         webView.addJavascriptInterface(new AndroidForJs(this),
                 "ObjForJs");
-        webView.loadUrl("file:///android_asset/index.html");
+//        webView.loadUrl("file:///android_asset/index.html");
+        webView.loadUrl("https://hxsb.by1983.cn/index.html");
         RxPermissions permissions = new RxPermissions(this);
-        permissions.request(Manifest.permission.CAMERA).
+        permissions.request(Manifest.permission.CAMERA,Manifest.permission.INTERNET).
                 subscribe(granted -> {
                     if (!granted) { // Always true pre-M
                         // I can control the camera now
@@ -77,6 +80,12 @@ public class WebViewActivity extends AppCompatActivity {
         super.onStart();
         //注册接收广播，并设置输出模式为广播模式
         initScanner();
+        // 注册IMEI号广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("extra.mdm.respone");
+        this.registerReceiver(mBroadcastReceiver, filter);
+
+        getDeviceImei();
     }
 
     private void initScanner() {
@@ -146,7 +155,9 @@ public class WebViewActivity extends AppCompatActivity {
         }
         @JavascriptInterface
         public String getImei() {
-           return  PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
+//           return  PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
+            String imeiDeviceId = PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
+            return TextUtils.isEmpty(imeiDeviceId)?mImei:imeiDeviceId;
         }
 
     }
@@ -175,5 +186,42 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 接收广播
+     */
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("extra.mdm.respone")) {
+                String imei = intent.getStringExtra("Data");//取得IMEI号
+                if(!TextUtils.isEmpty(imei)){
+                    mImei = imei;
+//                    webView.loadUrl("javascript:callbackFromImei('" + imei + "')");
+                }
+                Log.d("idata", "imei == " + imei);
+            }
+        }
+    };
+    String mImei;
+    /**
+     * 发送广播
+     */
+    private void getDeviceImei() {
+        Intent i = new Intent("extra.mdm.request");
+        i.putExtra("Cmd", 0x0003);
+        i.putExtra("Timestamp", System.currentTimeMillis());
+        i.putExtra("Option", 0);
+        this.sendBroadcast(i);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.unregisterReceiver(mBroadcastReceiver);
+    }
 }
