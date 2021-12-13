@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.FileUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -19,7 +21,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.qrmodule.QRActivity;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class WebViewActivity extends AppCompatActivity {
 
@@ -32,6 +41,7 @@ public class WebViewActivity extends AppCompatActivity {
     BroadcastReceiver scanReceiver;
     //*******重要
     private static final String RES_ACTION = "android.intent.action.SCANRESULT";
+    private String ip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +72,31 @@ public class WebViewActivity extends AppCompatActivity {
         webView.addJavascriptInterface(new AndroidForJs(this),
                 "ObjForJs");
 //        webView.loadUrl("file:///android_asset/index.html");
-        webView.loadUrl("https://hxsb.by1983.cn/index.html");
+        //读取sdcard文件
+        File dir =  getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File file = new File(dir, "/checkConfig.txt");
+        try {
+            FileReader reader = new FileReader(file);
+            char[] content = new char[1024];
+            reader.read(content);
+            String json = new String(content);
+            JSONObject object = new JSONObject(json);
+            String url = object.getString("url");
+            ip = object.getString("ip");
+            webView.loadUrl(url);
+            if (TextUtils.isEmpty(url)) {
+                Toast.makeText(this, "请检查是否有文件 checkConfig.txt", Toast.LENGTH_SHORT).show();
+                this.finish();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "请检查是否有文件 checkConfig", Toast.LENGTH_SHORT).show();
+            this.finish();
+            e.printStackTrace();
+        }
+//        webView.loadUrl("https://hxsb.by1983.cn/index.html");
         RxPermissions permissions = new RxPermissions(this);
-        permissions.request(Manifest.permission.CAMERA,Manifest.permission.INTERNET).
+        permissions.request(Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE).
                 subscribe(granted -> {
                     if (!granted) { // Always true pre-M
                         // I can control the camera now
@@ -156,7 +188,10 @@ public class WebViewActivity extends AppCompatActivity {
         @JavascriptInterface
         public String getImei() {
 //           return  PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
-            return PhoneUtil.getIpAddress(getApplicationContext());
+            if (TextUtils.isEmpty(ip)) {
+                return PhoneUtil.getIpAddress(getApplicationContext());
+            }
+            return ip;
 //            return TextUtils.isEmpty(imeiDeviceId)?mImei:imeiDeviceId;
         }
 
