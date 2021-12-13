@@ -156,8 +156,8 @@ public class WebViewActivity extends AppCompatActivity {
         @JavascriptInterface
         public String getImei() {
 //           return  PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
-            String imeiDeviceId = PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
-            return TextUtils.isEmpty(imeiDeviceId)?mImei:imeiDeviceId;
+            return PhoneUtil.getIpAddress(getApplicationContext());
+//            return TextUtils.isEmpty(imeiDeviceId)?mImei:imeiDeviceId;
         }
 
     }
