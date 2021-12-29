@@ -72,28 +72,6 @@ public class WebViewActivity extends AppCompatActivity {
         webView.addJavascriptInterface(new AndroidForJs(this),
                 "ObjForJs");
 //        webView.loadUrl("file:///android_asset/index.html");
-        //读取sdcard文件
-        File dir =  getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(dir, "/checkConfig.txt");
-        try {
-            FileReader reader = new FileReader(file);
-            char[] content = new char[1024];
-            reader.read(content);
-            String json = new String(content);
-            JSONObject object = new JSONObject(json);
-            String url = object.getString("url");
-            ip = object.getString("ip");
-            webView.loadUrl(url);
-            if (TextUtils.isEmpty(url)) {
-                Toast.makeText(this, "请检查是否有文件 checkConfig.txt", Toast.LENGTH_SHORT).show();
-                this.finish();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "请检查是否有文件 checkConfig", Toast.LENGTH_SHORT).show();
-            this.finish();
-            e.printStackTrace();
-        }
-//        webView.loadUrl("https://hxsb.by1983.cn/index.html");
         RxPermissions permissions = new RxPermissions(this);
         permissions.request(Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE).
@@ -103,8 +81,30 @@ public class WebViewActivity extends AppCompatActivity {
                         // Oups permission denied
                         Toast.makeText(this, "请打开相机权限", Toast.LENGTH_SHORT).show();
                         this.finish();
+                    }else{
+                        //读取sdcard文件
+                        File dir =  getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                        File file = new File(dir, "/checkConfig.txt");
+                        try {
+                            FileReader reader = new FileReader(file);
+                            char[] content = new char[1024];
+                            reader.read(content);
+                            String json = new String(content);
+                            JSONObject object = new JSONObject(json);
+                            String url = object.getString("url");
+                            ip = object.getString("ip");
+                            webView.loadUrl(url);
+                            if (TextUtils.isEmpty(url)) {
+                                Toast.makeText(this, "请检查是否有文件 checkConfig.txt", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(this, "请检查是否有文件 checkConfig", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
                     }
                 });
+
+//        webView.loadUrl("https://hxsb.by1983.cn/index.html");
     }
 
     @Override
