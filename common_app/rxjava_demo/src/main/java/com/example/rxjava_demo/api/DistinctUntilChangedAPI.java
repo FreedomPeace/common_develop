@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class distinctUntilChangedAPI {
+public class DistinctUntilChangedAPI {
     public List<RechargeCard> getFakeData() {
         Type type = new TypeToken<BaseResponse<CardResponse>>() {
         }.getType();

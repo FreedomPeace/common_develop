@@ -25,9 +25,10 @@
             app:layout_constraintTop_toTopOf="parent" />
         <fragment
             android:name="com.example.rxjava_demo.api.AllCardFragment"
+            android:id="@+id/all_card"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

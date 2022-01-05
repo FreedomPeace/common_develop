@@ -7,10 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.observe
-import com.example.rxjava_demo.api.distinctUntilChangedAPI
+import com.example.rxjava_demo.api.DistinctUntilChangedAPI
 import com.example.rxjava_demo.api.card.RechargeCard
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.functions.Consumer
 
 /**
  * map
@@ -23,7 +22,7 @@ import io.reactivex.rxjava3.functions.Consumer
  */
 class RxjavaMainActivity : AppCompatActivity() {
     private var data = MutableLiveData<List<RechargeCard>>()
-    private val distinct = distinctUntilChangedAPI()
+    private val distinct = DistinctUntilChangedAPI()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rxjava_main)
@@ -40,6 +39,7 @@ class RxjavaMainActivity : AppCompatActivity() {
                 return@observe
             }
             for (rechargeCard in it) {
+
                 Log.d("azp", "onCreate: size"+it.size)
                 Log.d("azp", rechargeCard.chargedPower.toString())
             }
