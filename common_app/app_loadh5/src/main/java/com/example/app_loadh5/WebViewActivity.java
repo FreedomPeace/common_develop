@@ -5,34 +5,40 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.FileUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qrmodule.QRActivity;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 
 public class WebViewActivity extends AppCompatActivity {
 
     private static final String TAG = WebViewActivity.class.getSimpleName();
+    private static final int TV_HEIGHT = 100;
     private final int REQUEST_CAMERA = 1;
     private WebView webView;
     private File mTmpFile;
@@ -47,20 +53,20 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
-        webView = (WebView) findViewById(R.id.webview);
+        webView = findViewById(R.id.webview);
 
         WebSettings webSettings = webView.getSettings();
 
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                //网页加载完之后，android调用js方法
-//                String msg ="展示内容";
-//                webView.loadUrl("javascript:callbackFromQrcode('"+msg+"')");
-                super.onPageFinished(view, url);
-
-            }
-        });
+//        webView.setWebViewClient(new WebViewClient() {
+//            @Override
+//            public void onPageFinished(WebView view, String url) {
+//                //网页加载完之后，android调用js方法
+////                String msg ="展示内容";
+////                webView.loadUrl("javascript:callbackFromQrcode('"+msg+"')");
+//                super.onPageFinished(view, url);
+//
+//            }
+//        });
         //允许webview对文件的操作
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setAllowFileAccess(true);
@@ -69,11 +75,17 @@ public class WebViewActivity extends AppCompatActivity {
         webSettings.setDefaultTextEncodingName("utf-8");
         webSettings.setJavaScriptEnabled(true);  //开启js
         webSettings.setAppCacheEnabled(true);
-        webView.addJavascriptInterface(new AndroidForJs(this),
+
+        loadUrlFromConfigFile();
+//        setNetWeb();
+//        setLocalWeb();
+    }
+
+    private void loadUrlFromConfigFile() {
+        webView.addJavascriptInterface(new AndroidForJs(),
                 "ObjForJs");
-//        webView.loadUrl("file:///android_asset/index.html");
         RxPermissions permissions = new RxPermissions(this);
-        permissions.request(Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.READ_EXTERNAL_STORAGE,
+        permissions.request(Manifest.permission.CAMERA, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE).
                 subscribe(granted -> {
                     if (!granted) { // Always true pre-M
@@ -81,9 +93,9 @@ public class WebViewActivity extends AppCompatActivity {
                         // Oups permission denied
                         Toast.makeText(this, "请打开相机权限", Toast.LENGTH_SHORT).show();
                         this.finish();
-                    }else{
+                    } else {
                         //读取sdcard文件
-                        File dir =  getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                        File dir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
                         File file = new File(dir, "/checkConfig.txt");
                         try {
                             FileReader reader = new FileReader(file);
@@ -93,18 +105,17 @@ public class WebViewActivity extends AppCompatActivity {
                             JSONObject object = new JSONObject(json);
                             String url = object.getString("url");
                             ip = object.getString("ip");
-                            webView.loadUrl(url);
                             if (TextUtils.isEmpty(url)) {
                                 Toast.makeText(this, "请检查是否有文件 checkConfig.txt", Toast.LENGTH_LONG).show();
+                                return;
                             }
+                            webView.loadUrl(url);
                         } catch (Exception e) {
                             Toast.makeText(this, "请检查是否有文件 checkConfig", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
                     }
                 });
-
-//        webView.loadUrl("https://hxsb.by1983.cn/index.html");
     }
 
     @Override
@@ -112,12 +123,6 @@ public class WebViewActivity extends AppCompatActivity {
         super.onStart();
         //注册接收广播，并设置输出模式为广播模式
         initScanner();
-        // 注册IMEI号广播接收器
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("extra.mdm.respone");
-        this.registerReceiver(mBroadcastReceiver, filter);
-
-        getDeviceImei();
     }
 
     private void initScanner() {
@@ -174,39 +179,23 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     public class AndroidForJs {
-        private Context context;
-
-        public AndroidForJs(Context context) {
-            this.context = context;
-        }
 
         //api17以后，只有public且添加了 @JavascriptInterface 注解的方法才能被调用
         @JavascriptInterface
         public void startQrcode() {
             startActivityForResult(new Intent(WebViewActivity.this, QRActivity.class), REQUEST_CAMERA);
         }
+
         @JavascriptInterface
         public String getImei() {
-//           return  PhoneUtil.getIMEIDeviceId(WebViewActivity.this);
             if (TextUtils.isEmpty(ip)) {
                 return PhoneUtil.getIpAddress(getApplicationContext());
             }
             return ip;
-//            return TextUtils.isEmpty(imeiDeviceId)?mImei:imeiDeviceId;
         }
 
     }
 
-
-    private void runWebView(final String url) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl(url);
-            }
-        });
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -221,42 +210,102 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 接收广播
-     */
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("extra.mdm.respone")) {
-                String imei = intent.getStringExtra("Data");//取得IMEI号
-                if(!TextUtils.isEmpty(imei)){
-                    mImei = imei;
-//                    webView.loadUrl("javascript:callbackFromImei('" + imei + "')");
-                }
-                Log.d("idata", "imei == " + imei);
-            }
-        }
-    };
-    String mImei;
-    /**
-     * 发送广播
-     */
-    private void getDeviceImei() {
-        Intent i = new Intent("extra.mdm.request");
-        i.putExtra("Cmd", 0x0003);
-        i.putExtra("Timestamp", System.currentTimeMillis());
-        i.putExtra("Option", 0);
-        this.sendBroadcast(i);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(mBroadcastReceiver);
+        this.unregisterReceiver(scanReceiver);
+    }
+
+    @NonNull
+    private TextView getTextView() {
+        final TextView textView = new TextView(getApplication());
+        textView.setTextColor(Color.GRAY);
+        textView.setTextSize(20f);
+        textView.setBackgroundColor(Color.YELLOW);
+        textView.setText("WebActivity TextView ");
+        textView.setGravity(Gravity.CENTER);
+        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                DensityUtil.dp2px(getApplication(), TV_HEIGHT)));
+        return textView;
+    }
+
+    private void setNetWeb() {
+        webView.loadUrl("https://www.baidu.com/");
+//        webView.loadUrl("https://hxsb.by1983.cn/index.html");
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+//                L.e("webView:",webView.getChildCount()+"");
+                final TextView textView = getTextView();
+                webView.evaluateJavascript("javaScript: function getAdPosition() {\n"
+                                + "        var advertisement = document.getElementById(\"index-form\");\n"
+                                + "        return advertisement.offsetTop;\n"
+                                + "    };getAdPosition()",
+                        new ValueCallback<String>() {
+                            @Override
+                            public void onReceiveValue(String value) {
+                                Log.e("getAdPosition:", value);
+                                if (value == null || value.equals("null")) {
+                                    return;
+                                }
+                                textView.setTranslationY(DensityUtil.dp2px(WebViewActivity.this, Float.parseFloat(value)));
+                                webView.addView(textView);
+                                webView.loadUrl("javaScript: function setAdHeight(height) {\n"
+                                        + "        var advertisement = document.getElementById(\"index-form\");\n"
+                                        + "        advertisement.style.marginTop=height+\"px\";\n"
+                                        + "    }; setAdHeight(" + (TV_HEIGHT + 16) + ");");
+                            }
+                        });
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                super.onReceivedSslError(view, handler, error);
+                handler.proceed();
+            }
+        });
+
+    }
+
+    private void setLocalWeb() {
+        webView.loadUrl("file:///android_asset/html_mix.html");
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+//                L.e("webView:",webView.getChildCount()+"");
+                final TextView textView = getTextView();
+
+//                webView .evaluateJavascript("javaScript:getAdPosition()",
+//                        new ValueCallback<String>() {
+//                            @Override
+//                            public void onReceiveValue(String value) {
+//                                Log.i("getAdPosition:",value);
+//                                textView.setTranslationY(DensityUtil.dp2px(WebViewActivity.this,Float.parseFloat(value)));
+//                                webView.addView(textView);
+//                                webView.loadUrl("javaScript:setAdHeight("+TV_HEIGHT+")");
+//                            }
+//                        });
+                webView.evaluateJavascript(" function getAdPosition() {\n" +
+                                "        var advertisement = document.getElementById(\"advertisement\");\n" +
+                                "        return advertisement.offsetTop;\n" +
+                                "    };getAdPosition()",
+                        new ValueCallback<String>() {
+                            @Override
+                            public void onReceiveValue(String value) {
+                                Log.i("getAdPosition:", value);
+                                textView.setTranslationY(DensityUtil.dp2px(WebViewActivity.this, Float.parseFloat(value)));
+                                webView.addView(textView);
+                                webView.loadUrl("javaScript:setAdHeight(" + TV_HEIGHT + ")");
+                            }
+                        });
+            }
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                super.onReceivedSslError(view, handler, error);
+                handler.proceed();
+            }
+        });
     }
 }
