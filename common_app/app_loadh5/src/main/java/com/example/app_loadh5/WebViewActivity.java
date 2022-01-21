@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -16,8 +17,6 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -38,7 +37,7 @@ import java.io.FileReader;
 public class WebViewActivity extends AppCompatActivity {
 
     private static final String TAG = WebViewActivity.class.getSimpleName();
-    private static final int TV_HEIGHT = 100;
+    private static final int TV_HEIGHT = 200;
     private final int REQUEST_CAMERA = 1;
     private WebView webView;
     private File mTmpFile;
@@ -76,9 +75,12 @@ public class WebViewActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);  //开启js
         webSettings.setAppCacheEnabled(true);
 
-        loadUrlFromConfigFile();
-//        setNetWeb();
+//        loadUrlFromConfigFile();
+        setNetWeb();
 //        setLocalWeb();
+
+        //注册接收广播，并设置输出模式为广播模式
+        initScanner();
     }
 
     private void loadUrlFromConfigFile() {
@@ -116,13 +118,6 @@ public class WebViewActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //注册接收广播，并设置输出模式为广播模式
-        initScanner();
     }
 
     private void initScanner() {
