@@ -26,11 +26,6 @@ class RxjavaMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rxjava_main)
-        val subscribe = Observable.just("1", "2").subscribe {
-            Log.d("azp", it)
-        }
-        subscribe.dispose()
-
 
         val distinctUntilChanged = Transformations.distinctUntilChanged(data)
         distinctUntilChanged.observe(this){

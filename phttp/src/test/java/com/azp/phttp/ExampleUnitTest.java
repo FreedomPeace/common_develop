@@ -1,8 +1,5 @@
 package com.azp.phttp;
 
-import com.azp.phttp.proxy.AProxy;
-import com.azp.phttp.proxy.AddApi;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

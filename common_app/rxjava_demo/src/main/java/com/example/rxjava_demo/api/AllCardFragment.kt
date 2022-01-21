@@ -19,6 +19,10 @@ open class AllCardFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(CardViewModel::class.java)
         viewModel.cardList.value = DistinctUntilChangedAPI().fakeData
+        viewModel.subject.doOnSuccess {
+            DistinctUntilChangedAPI.mockStr
+            print("6666")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
