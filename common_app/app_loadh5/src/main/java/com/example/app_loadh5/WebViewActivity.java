@@ -75,8 +75,8 @@ public class WebViewActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);  //开启js
         webSettings.setAppCacheEnabled(true);
 
-//        loadUrlFromConfigFile();
-        setNetWeb();
+        loadUrlFromConfigFile();
+//        setNetWeb();
 //        setLocalWeb();
 
         //注册接收广播，并设置输出模式为广播模式
