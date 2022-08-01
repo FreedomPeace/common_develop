@@ -11,6 +11,10 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
+import io.reactivex.rxjava3.functions.Consumer;
+
 /**
  * 开发注意事项：
  * 	1，该开发包基于iScan开发，需要预装iScan4.2.0以上版本。
@@ -52,7 +56,6 @@ public class MainActivity22 extends Activity{
     protected void onPause() {
         super.onPause();
         //取消接收扫描广播，并恢复输出模式为默认
-
         if (scanReceiver != null){
             unregisterReceiver(scanReceiver);
         }

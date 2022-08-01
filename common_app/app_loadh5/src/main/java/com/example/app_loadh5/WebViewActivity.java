@@ -206,6 +206,12 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        webView.goBack();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(scanReceiver);
