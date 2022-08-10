@@ -108,12 +108,12 @@ public class WebViewActivity extends AppCompatActivity {
                             String url = object.getString("url");
                             ip = object.getString("ip");
                             if (TextUtils.isEmpty(url)) {
-                                Toast.makeText(this, "请检查是否有文件 checkConfig.txt", Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, String.format("请检查是否有文件 %s",file.getAbsolutePath()), Toast.LENGTH_LONG).show();
                                 return;
                             }
                             webView.loadUrl(url);
                         } catch (Exception e) {
-                            Toast.makeText(this, "请检查是否有文件 checkConfig", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, String.format("请检查是否有文件 %s",file.getAbsolutePath()), Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
                     }
@@ -207,8 +207,13 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        webView.goBack();
+
+        boolean b = webView.canGoBack();
+        if (b) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -231,8 +236,8 @@ public class WebViewActivity extends AppCompatActivity {
     }
 
     private void setNetWeb() {
-        webView.loadUrl("https://www.baidu.com/");
-//        webView.loadUrl("https://hxsb.by1983.cn/index.html");
+//        webView.loadUrl("https://www.baidu.com/");
+        webView.loadUrl("https://www.by1983.com/hexiao/");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
