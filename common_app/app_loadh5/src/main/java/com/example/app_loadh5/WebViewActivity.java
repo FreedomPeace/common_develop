@@ -195,7 +195,9 @@ public class WebViewActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        if (resultCode !=RESULT_OK) {
+            return;
+        }
         switch (requestCode) {
             case REQUEST_CAMERA:
                 String qrcode = data.getStringExtra("qrcode");
