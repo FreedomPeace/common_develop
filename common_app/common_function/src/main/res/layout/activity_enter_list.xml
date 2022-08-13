@@ -7,9 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".enter.EnterListActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <cn.com.codequality.enter.GalleryRecyclerView
+        android:paddingStart="40dp"
+        android:background="@color/colorAccent"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/activity_list"
+        app:layout_constraintTop_toTopOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
