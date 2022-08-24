@@ -2,7 +2,7 @@
 apply from: file('gradle/check.gradle')
 apply from: file('config.gradle')
 buildscript { 
-    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.6.0'
 
     repositories {
         jcenter()
