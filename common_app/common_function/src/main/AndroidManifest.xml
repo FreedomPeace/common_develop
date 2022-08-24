@@ -19,7 +19,7 @@
         <activity android:name=".business.chat.ChatActivity" />
         <activity
             android:name=".enter.EnterListActivity"
-            android:launchMode="singleInstance">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -28,26 +28,36 @@ import cn.com.codequality.R;
 
 public class EnterListActivity extends BaseActivity {
 
-    MutableLiveData<Integer> index  = new MutableLiveData<>();
+    MutableLiveData<Integer> index = new MutableLiveData<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_list);
-        List<String> data = initData();
+        List<PageInfo> data = initData();
         initView(data);
         setSwipeBackEnable(false);
     }
 
-    private List<String> initData() {
-        List<String> data = new ArrayList<>();
+    public class PageInfo {
+        public String name;
+        public String simpleName;
+
+        public PageInfo(String name, String simpleName) {
+            this.name = name;
+            this.simpleName = simpleName;
+        }
+    }
+
+    private List<PageInfo> initData() {
+        List<PageInfo> data = new ArrayList<>();
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES);
             ActivityInfo[] activities = packageInfo.activities;
             for (ActivityInfo activity : activities) {
                 String name = activity.name;
-                String simpleName = name.substring(name.lastIndexOf(".") - 1);
-                data.add(name);
+                String simpleName = name.substring(name.lastIndexOf(".") + 1);
+                data.add(new PageInfo(name, simpleName));
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -55,12 +65,12 @@ public class EnterListActivity extends BaseActivity {
         return data;
     }
 
-    private void initView(final List<String> data) {
+    private void initView(final List<PageInfo> data) {
         RecyclerView activityList = findViewById(R.id.activity_list);
-        activityList.setLayoutManager(new LinearLayoutManager(this,RecyclerView.HORIZONTAL,false));
+        activityList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         DividerItemDecoration decor = new DividerItemDecoration(this, DividerItemDecoration
                 .HORIZONTAL);
-        decor.setDrawable(AppCompatResources.getDrawable(this,R.drawable.bga_adapter_divider_shape));
+        decor.setDrawable(AppCompatResources.getDrawable(this, R.drawable.bga_adapter_divider_shape));
         activityList.addItemDecoration(decor);
         EnterListAdapter enterListAdapter = new EnterListAdapter(activityList, R.layout.recycler_chat);
         enterListAdapter.setData(data);
@@ -68,14 +78,14 @@ public class EnterListActivity extends BaseActivity {
         enterListAdapter.setOnRVItemClickListener(new BGAOnRVItemClickListener() {
             @Override
             public void onRVItemClick(ViewGroup parent, View itemView, int position) {
-                String className = data.get(position);
+                PageInfo className = data.get(position);
                 Intent intent = new Intent();
-                intent.setClassName(getApplicationContext(), className);
+                intent.setClassName(getApplicationContext(), className.name);
                 startActivity(intent);
             }
         });
 
-        index.observe(this,offset->{
+        index.observe(this, offset -> {
             if (offset < activityList.getAdapter().getItemCount()) {
                 activityList.scrollToPosition(offset);
             }
@@ -94,7 +104,7 @@ public class EnterListActivity extends BaseActivity {
                             // 获取居中的具体位置 时的角标
                             RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                             View snapView = snapHelper.findSnapView(layoutManager);
-                            int  indexTmp = ((RecyclerView.LayoutParams) snapView.getLayoutParams()).getViewAdapterPosition();
+                            int indexTmp = ((RecyclerView.LayoutParams) snapView.getLayoutParams()).getViewAdapterPosition();
                             Log.d(TAG, "onScrollStateChanged" + " 滑动的 position ==" + index);
                             index.setValue(indexTmp);
                         } catch (Exception e) {
