@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
 
@@ -20,10 +21,10 @@ public class RxDistinctTest {
         s2.add(4);
 
 //        distinct1();
-        distinct1(s1,s2);
+        filterOrZip(s1,s2);
     }
 
-    private static void distinct1() {
+    private static void filterOrZip() {
         Observable.just(1,2,3,4,6,3,4)
 //                .distinctUntilChanged()//新的item 和上一次的不同 才分发
                 .distinct(new Function<Integer, String>() {//去重复
@@ -36,7 +37,7 @@ public class RxDistinctTest {
                 .doOnNext(System.out::println)
                 .subscribe();
     }
-    private static void distinct1(List<Integer> s1 ,List<Integer> s2) {
+    private static void filterOrZip(List<Integer> s1 , List<Integer> s2) {
         System.out.print("s1:::");
         System.out.println(s1);
         System.out.print("s2:::");
@@ -76,5 +77,32 @@ public class RxDistinctTest {
                     System.out.println(integers);
                 })
                 .subscribe();
+        System.out.println("=============zip zip==============");
+        Observable.zip(Observable.fromIterable(s1).filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Throwable {
+                        return !s2.contains(integer);
+                    }
+                })
+                .toList().toObservable(),
+                Observable.fromIterable(s2).filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Throwable {
+                        return !s1.contains(integer);
+                    }
+                })
+                .toList().toObservable(), new BiFunction<List<Integer>, List<Integer>, androidx.core.util.Pair<List<Integer>, List<Integer>>>() {
+            @Override
+            public androidx.core.util.Pair<List<Integer>, List<Integer>> apply(List<Integer> integers, List<Integer> integers2) throws Throwable {
+                return androidx.core.util.Pair.create(integers,integers2);
+            }
+        }).subscribe(listListPair -> {
+            System.out.print("zip:::");
+            System.out.print(listListPair.first);
+            System.out.print(":::");
+            System.out.println(listListPair.second);
+        },throwable -> {
+            System.out.println(throwable.getCause());
+        });
     }
 }
