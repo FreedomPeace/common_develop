@@ -26,7 +26,7 @@ public class HomeFragment extends Fragment {
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        homeViewModel.getTextFromGithub(getContext());
+        homeViewModel.getFreedomPeaceInfo(getContext());
         return root;
     }
 
