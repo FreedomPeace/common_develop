@@ -9,7 +9,6 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.functions.BiFunction;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
 
 public class RxCombiningTest {
@@ -55,7 +54,8 @@ public class RxCombiningTest {
                             System.out.print("s2 不相同的数据：：：");
                             System.out.println(integers);
                         })
-                        .toObservable(), new BiFunction<List<Integer>, List<Integer>, androidx.core.util.Pair<List<Integer>, List<Integer>>>() {
+                        .toObservable(),
+                new BiFunction<List<Integer>, List<Integer>, androidx.core.util.Pair<List<Integer>, List<Integer>>>() {
                     @Override
                     public androidx.core.util.Pair<List<Integer>, List<Integer>> apply(List<Integer> integers, List<Integer> integers2) throws Throwable {
                         return androidx.core.util.Pair.create(integers, integers2);
@@ -76,12 +76,14 @@ public class RxCombiningTest {
         Observable<Integer> source1 = Observable.fromIterable(s1);
         Observable<Integer> source2 = Observable.fromIterable(s2);
         Observable.merge(source1,source2)
-                .toMap(new Function<Integer, String>() {
-                    @Override
-                    public String apply(Integer integer) throws Throwable {
-                        return integer+"key";
-                    }
-                }).subscribe(System.out::println);
+//                .toMap(new Function<Integer, String>() {
+//                    @Override
+//                    public String apply(Integer integer) throws Throwable {
+//                        return integer+"key";
+//                    }
+//                })
+                .toList()
+                .subscribe(System.out::println);
     }
     private static void combineLatest(Integer[] numbers, String[] letters) {
         System.out.println("=============combineLatest==============");
@@ -121,12 +123,20 @@ public class RxCombiningTest {
                 }
             }
         });
-        Observable<String> numObs = Observable.fromArray(numbers);
+        Observable<String> numObs = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<String> emitter) throws Throwable {
+                for (String number : numbers) {
+                    Thread.sleep(200);
+                    emitter.onNext(number);
+                }
+            }
+        });
 
         System.out.println("=============startWith==============");
         printSource(Arrays.asList(numbers),Arrays.asList(letters));
 
-        asyLetterObs.startWithArray(numbers).subscribe(RxCombiningTest::print);
+//        asyLetterObs.startWithArray(numbers).subscribe(RxCombiningTest::print);
 
         asyLetterObs.startWith(numObs).subscribe(RxCombiningTest::print);
     }
