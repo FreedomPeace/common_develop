@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".business.BottomSheetTestActivity">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/sliding"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#666"
+            android:gravity="bottom">
+            <ImageView
+                android:background="#f66"
+                android:layout_width="match_parent"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_height="100dp"/>
+            <cn.com.codequality.business.view.TabLayoutViewPager2Comp
+                android:id="@+id/details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:behavior_peekHeight="300dp"
+                app:behavior_hideable="true"
+                app:behavior_halfExpandedRatio="0.4"
+                app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,20 @@
 package cn.com.codequality.business.chat;
 
+import static com.bankcomm.framework.utils.Utils.checkNotNull;
+
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.transition.ChangeBounds;
-import androidx.transition.Slide;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.ChangeBounds;
+import androidx.transition.Slide;
 
 import com.bankcomm.ui.adapter.intfc.BGAOnRVItemClickListener;
 import com.bankcomm.ui.base.BaseFragment;
@@ -25,8 +28,6 @@ import java.util.Random;
 import cn.com.codequality.R;
 import cn.com.codequality.business.chat.detail.ChatDetailFragment;
 import cn.com.codequality.data.chat.bean.Chat;
-
-import static com.bankcomm.framework.utils.Utils.checkNotNull;
 
 /**
  * Created by  on 2018/6/22.
@@ -98,12 +99,18 @@ public class ChatFragment extends BaseFragment implements ChatContract.View {
     @Override
     public void onResume() {
         super.onResume();
+        if (mPresenter==null) {
+            return;
+        }
         mPresenter.subscribe();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (mPresenter==null) {
+            return;
+        }
         mPresenter.unsubscribe();
     }
 

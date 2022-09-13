@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".business.BottomSheetTestActivity"
+            android:exported="false" />
+        <activity
             android:name=".business.apng.GifAndApngActivity"
             android:exported="false" />
         <activity android:name=".memory_leak.handlerloop.HandlerLoopActivity" />

@@ -1,6 +1,11 @@
 package cn.com.codequality.base;
 
 
+import android.app.AppComponentFactory;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.bankcomm.framework.BuildConfig;
 import com.bankcomm.framework.network.FrameworkConstant;
 import com.bankcomm.ui.base.BaseApplication;
@@ -11,6 +16,7 @@ import com.bankcomm.ui.base.BaseApplication;
 
 public class MyApplication extends BaseApplication {
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate() {
         super.onCreate();

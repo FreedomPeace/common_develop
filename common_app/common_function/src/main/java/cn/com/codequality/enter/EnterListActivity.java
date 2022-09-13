@@ -1,22 +1,26 @@
 package cn.com.codequality.enter;
 
+import android.app.Activity;
+import android.app.AppComponentFactory;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.bankcomm.ui.adapter.intfc.BGAOnRVItemClickListener;
 import com.bankcomm.ui.base.BaseActivity;
@@ -25,11 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.com.codequality.R;
+import cn.com.codequality.app_component_factory.TestActivity;
 
 public class EnterListActivity extends BaseActivity {
 
     MutableLiveData<Integer> index = new MutableLiveData<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +43,41 @@ public class EnterListActivity extends BaseActivity {
         List<PageInfo> data = initData();
         initView(data);
         setSwipeBackEnable(false);
+//        AppComponentFactory appFactory = createAppFactory(getApplicationInfo(), getClassLoader());
+//        try {
+//            appFactory.instantiateActivity(getClassLoader(), TestActivity.class.getName(), null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private AppComponentFactory createAppFactory(ApplicationInfo appInfo, ClassLoader cl) {
+        if (appInfo.appComponentFactory != null && cl != null) {
+            try {
+                return (AppComponentFactory)
+                        cl.loadClass(appInfo.appComponentFactory).newInstance();
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                Log.e(TAG, "Unable to instantiate appComponentFactory", e);
+            }
+        }
+        return null;
+    }
+
+    public void go2Test(View view) {
+//        startActivity(new Intent(this,TestActivity.class));
+        AppComponentFactory appFactory = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            appFactory = createAppFactory(getApplicationInfo(), getClassLoader());
+        }
+        try {
+            Activity activity = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                activity = appFactory.instantiateActivity(getClassLoader(), TestActivity.class.getName(), null);
+            }
+            startActivity(new Intent(this,activity.getClass()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public class PageInfo {
