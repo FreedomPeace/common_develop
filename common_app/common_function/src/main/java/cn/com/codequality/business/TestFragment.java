@@ -16,6 +16,11 @@ import com.bankcomm.ui.adapter.intfc.BGAOnRVItemClickListener;
 import com.bankcomm.ui.base.BaseFragment;
 import com.bankcomm.ui.view.dialogs.shade.IShade;
 import com.bankcomm.ui.view.dialogs.shade.ProgressShadeImp;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.header.ClassicsHeader;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +35,13 @@ import cn.com.codequality.data.chat.bean.Chat;
  */
 
 public class TestFragment extends BaseFragment  {
-
     private TextView testJsonView;
     private ChatAdapter mChatAdapter;
     private View mNoDataView;
-    private RecyclerView mChatList;
+    public  RecyclerView mChatList;
     private IShade mShade;
     private ChatDetailFragment chatDetailFragment;
-
+    public static final String TAG = "TestFragment ==";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,15 +72,45 @@ public class TestFragment extends BaseFragment  {
             }
         });
         mChatList.setAdapter(mChatAdapter);
+
+        RefreshLayout refreshLayout = (RefreshLayout)view.findViewById(R.id.refreshLayout);
+        refreshLayout.setRefreshHeader(new ClassicsHeader(getContext()));
+        refreshLayout.setRefreshFooter(new ClassicsFooter(getContext()));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+            }
+        });
+       on_layout = view.findViewById(R.id.on_layout);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        on_layout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        on_layout.setVisibility(View.VISIBLE);
+    }
+
+    View on_layout;
     public List<Chat> getData() {
         List<Chat> data = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             Chat chat = new Chat();
             chat.setId(""+i*12);
-            chat.setMessage("i am busy"+i);
+            chat.setMessage("i am TestFragment"+i);
             data.add(chat);
         }
         return data;

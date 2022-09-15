@@ -1,18 +1,22 @@
 package cn.com.codequality.business.view;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -28,18 +32,19 @@ public class TabLayoutViewPager2Comp extends FrameLayout {
         addView(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void initView(FragmentActivity fa) {
         TabLayout tabLayout = findViewById(R.id.tab);
         ViewPager2 viewPager2 = findViewById(R.id.viewpager2);
-        TestFragment chatFragment = new TestFragment();
+                TestFragment testFragment = new TestFragment();
         viewPager2.setAdapter(new FragmentStateAdapter(fa) {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
                 if (position == 0) {
-                    return chatFragment;
-                } else {
                     return new ChatFragment();
+                } else {
+                    return testFragment;
                 }
             }
 
@@ -48,6 +53,8 @@ public class TabLayoutViewPager2Comp extends FrameLayout {
                 return 2;
             }
         });
+
+//        MCoordinatorLayout coordinatorLayout = (MCoordinatorLayout) TabLayoutViewPager2Comp.this.getParent();
         TabLayoutMediator mediator=new TabLayoutMediator(tabLayout,viewPager2,(tab, position) -> {
             switch (position){
                 case 0:
@@ -58,11 +65,36 @@ public class TabLayoutViewPager2Comp extends FrameLayout {
                     break;
             }
         });
+        BottomSheetBehavior<TabLayoutViewPager2Comp> sheetBehavior = BottomSheetBehavior.from(TabLayoutViewPager2Comp.this);
+        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                Log.d("ppp" ,"onStateChanged "+newState);
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
         mediator.attach();
         viewPager2.setNestedScrollingEnabled(false);
         for (int i = 0; i < viewPager2.getChildCount(); i++) {
             viewPager2.getChildAt(i).setNestedScrollingEnabled(false);
         }
     }
-
 }

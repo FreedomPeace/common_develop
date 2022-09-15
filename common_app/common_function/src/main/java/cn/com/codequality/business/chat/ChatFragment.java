@@ -23,7 +23,6 @@ import com.bankcomm.ui.view.dialogs.shade.ProgressShadeImp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import cn.com.codequality.R;
 import cn.com.codequality.business.chat.detail.ChatDetailFragment;
@@ -93,12 +92,14 @@ public class ChatFragment extends BaseFragment implements ChatContract.View {
             }
         });
         mChatList.setAdapter(mChatAdapter);
+        on_layout = view.findViewById(R.id.on_layout);
         return view;
     }
-
+    View on_layout;
     @Override
     public void onResume() {
         super.onResume();
+        on_layout.setVisibility(View.GONE);
         if (mPresenter==null) {
             return;
         }
@@ -108,6 +109,7 @@ public class ChatFragment extends BaseFragment implements ChatContract.View {
     @Override
     public void onPause() {
         super.onPause();
+        on_layout.setVisibility(View.VISIBLE);
         if (mPresenter==null) {
             return;
         }
@@ -144,10 +146,10 @@ public class ChatFragment extends BaseFragment implements ChatContract.View {
 
     public List<Chat> getData() {
         List<Chat> data = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 20; i++) {
             Chat chat = new Chat();
             chat.setId(""+i*12);
-            chat.setMessage(i%2==0?"\t":""+"i am busy"+i* new Random(100).nextInt());
+            chat.setMessage("i am busy"+i);
             data.add(chat);
         }
         return data;
