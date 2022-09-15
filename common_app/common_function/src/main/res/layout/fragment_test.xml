@@ -10,8 +10,8 @@
         android:id="@+id/on_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="1dp"
-        android:layout_height="2dp"/>
+        android:layout_width="0.0001dp"
+        android:layout_height="0.001dp"/>
 
     <TextView
         android:id="@+id/test_json"

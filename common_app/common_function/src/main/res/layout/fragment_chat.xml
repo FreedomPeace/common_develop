@@ -10,8 +10,8 @@
         android:id="@+id/on_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="1dp"
-        android:layout_height="2dp"/>
+        android:layout_width="0.0001dp"
+        android:layout_height="0.0001dp"/>
     <TextView
         app:layout_constraintTop_toBottomOf="@+id/on_layout"
         android:layout_width="match_parent"
