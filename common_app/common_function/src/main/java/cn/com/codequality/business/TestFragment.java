@@ -35,7 +35,7 @@ import cn.com.codequality.data.chat.bean.Chat;
  */
 
 public class TestFragment extends BaseFragment  {
-    private TextView testJsonView;
+    public TextView testJsonView;
     private ChatAdapter mChatAdapter;
     private View mNoDataView;
     public  RecyclerView mChatList;

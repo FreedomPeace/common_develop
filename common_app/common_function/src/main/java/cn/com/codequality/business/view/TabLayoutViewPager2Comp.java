@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,10 @@ import cn.com.codequality.business.TestFragment;
 import cn.com.codequality.business.chat.ChatFragment;
 
 public class TabLayoutViewPager2Comp extends FrameLayout {
+    /**
+     * 上滑主题卡片弹出内容背景最大百分比
+     */
+    private static final float MAX_BOTTOM_SHEET_DIM = 0.5f;
     public TabLayoutViewPager2Comp(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,6 +70,8 @@ public class TabLayoutViewPager2Comp extends FrameLayout {
                     break;
             }
         });
+        ViewGroup.LayoutParams layoutParams = tabLayout.getLayoutParams();
+        int maxHeight = layoutParams.height;
         BottomSheetBehavior<TabLayoutViewPager2Comp> sheetBehavior = BottomSheetBehavior.from(TabLayoutViewPager2Comp.this);
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -74,7 +81,30 @@ public class TabLayoutViewPager2Comp extends FrameLayout {
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                float absSlideOffset = Math.abs(slideOffset);
+                float radio = 1f - absSlideOffset;
+                if (radio > 1) {
+                    radio = 1;
+                }
+                tabLayout.setAlpha(radio);
 
+                //滑动到哪个比例消失
+                double goneOffset = 0.6;
+                if (absSlideOffset > goneOffset) {
+                    return;
+                }
+                Log.d("ppp" ,"onSlide "+absSlideOffset);
+                //确定放到倍数
+                double ratio = 1 / goneOffset;
+                //1 -> goneOffset  变化 ，放大到  1 -> 0 变化
+                double radio2 = Math.abs(1f - slideOffset*ratio);
+                Log.d("ppp" ,"radio2 "+radio2);
+                layoutParams.height = (int) (maxHeight*(radio2));
+                Log.d("ppp" ,"height "+layoutParams.height);
+
+                //高度为0 会还原开始高度。 。。。
+                layoutParams.height = layoutParams.height==0?1:layoutParams.height;
+                tabLayout.setLayoutParams(layoutParams);
             }
         });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){

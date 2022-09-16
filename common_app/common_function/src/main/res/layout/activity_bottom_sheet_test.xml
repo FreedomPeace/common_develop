@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 app:behavior_peekHeight="300dp"
                 app:behavior_hideable="true"
-                app:behavior_halfExpandedRatio="0.4"
+                app:behavior_halfExpandedRatio="0.3"
                 app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
 
 
