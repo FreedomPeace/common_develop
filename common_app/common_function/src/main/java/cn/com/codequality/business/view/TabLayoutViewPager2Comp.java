@@ -22,7 +22,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import cn.com.codequality.R;
-import cn.com.codequality.business.TestFragment;
+import cn.com.codequality.business.bottomsheet.TestFragment;
 import cn.com.codequality.business.chat.ChatFragment;
 
 public class TabLayoutViewPager2Comp extends FrameLayout {
