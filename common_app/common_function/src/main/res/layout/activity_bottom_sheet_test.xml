@@ -5,25 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".business.bottomsheet.BottomSheetTestActivity">
+
+    <ImageView
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="100dp"
+        android:background="#ff0"
+        android:id="@+id/header_pic"
+        android:layout_width="match_parent"
+        android:src="@mipmap/ic_launcher_round"
+        android:layout_height="200dp"/>
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/sliding"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="200dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#666"
-            android:gravity="bottom">
-            <ImageView
-                android:background="#f66"
-                android:layout_width="match_parent"
-                android:src="@mipmap/ic_launcher_round"
-                android:layout_height="100dp"/>
+            android:layout_height="match_parent">
             <cn.com.codequality.business.view.TabLayoutViewPager2Comp
-                android:id="@+id/details"
+                android:id="@+id/tabLayoutViewPager2Comp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:behavior_hideable="false"
                 app:behavior_peekHeight="300dp"
-                app:behavior_hideable="true"
+                app:behavior_fitToContents="false"
                 app:behavior_halfExpandedRatio="0.3"
                 app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
 
