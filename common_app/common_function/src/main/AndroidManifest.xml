@@ -25,6 +25,9 @@
             android:name=".business.bottomsheet.BottomSheetTestActivity"
             android:exported="false" />
         <activity
+            android:name=".business.bottomsheet.BottomSheetTest2Activity"
+            android:exported="false" />
+        <activity
             android:name=".business.apng.GifAndApngActivity"
             android:exported="false" />
         <activity android:name=".memory_leak.handlerloop.HandlerLoopActivity" />

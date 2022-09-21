@@ -59,7 +59,7 @@ public class BottomSheetTestActivity extends AppCompatActivity {
 
     View translationView;
     private void initViewPage2AndTabLayout() {
-        TabLayoutViewPager2Comp tabLayoutViewPager2Comp = findViewById(R.id.tabLayoutViewPager2Comp);
+        TabLayoutViewPager2Comp tabLayoutViewPager2Comp = findViewById(R.id.sheet);
         View headPic = findViewById(R.id.header_pic);
         CoordinatorLayout sliding = findViewById(R.id.sliding);
         ViewPager2 viewPager2 = findViewById(R.id.viewpager2);
@@ -129,6 +129,7 @@ public class BottomSheetTestActivity extends AppCompatActivity {
 //                    headPic.setVisibility(View.VISIBLE);
                 } else {
                     sheetBehavior.setPeekHeight(dimen_100);
+//                    sheetBehavior.setHalfExpandedRatio(0.8f);
 //                    headPic.setVisibility(View.GONE);
                 }
             }

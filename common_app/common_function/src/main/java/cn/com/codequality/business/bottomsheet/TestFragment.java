@@ -8,12 +8,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bankcomm.ui.adapter.intfc.BGAOnRVItemClickListener;
-import com.bankcomm.ui.base.BaseFragment;
 import com.bankcomm.ui.view.dialogs.shade.IShade;
 import com.bankcomm.ui.view.dialogs.shade.ProgressShadeImp;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -34,7 +34,7 @@ import cn.com.codequality.data.chat.bean.Chat;
  * Created by  on 2018/6/22.
  */
 
-public class TestFragment extends BaseFragment  {
+public class TestFragment extends Fragment {
     public TextView testJsonView;
     private ChatAdapter mChatAdapter;
     private View mNoDataView;
