@@ -33,19 +33,30 @@ public class BottomSheetTest2Activity extends AppCompatActivity {
     private void initViewPage2AndTabLayout() {
         TestFragment testFragment = (TestFragment) getSupportFragmentManager().findFragmentById(R.id.sheet);
         translationView = findViewById(R.id.header_pic);
-        int dimen_ = getResources().getDimensionPixelSize(R.dimen.dimen_150);
+
         View view = testFragment.getView();
+
         BottomSheetBehavior<View> sheetBehavior = BottomSheetBehavior.from(view);
         float halfExpandedRatio = sheetBehavior.getHalfExpandedRatio();
 
+        View contentView = findViewById(R.id.content);
+        contentView.post(new Runnable() {
+            @Override
+            public void run() {
+                int height = contentView.getHeight();
+                int peekHeight = (int) (height * (1 - halfExpandedRatio));
+                translationView.getLayoutParams().height = peekHeight;
+                sheetBehavior.setPeekHeight(peekHeight);
+            }
+        });
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+//                if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
 //                    translationView.setTranslationY(dimen_);
-                }
+//                }
                 Log.d("ppp", String.format("onStateChanged newState is %d", newState));
-                currentState = newState;
+//                currentState = newState;
             }
 
             @Override
@@ -65,7 +76,7 @@ public class BottomSheetTest2Activity extends AppCompatActivity {
                 Log.d("ppp", String.format(" slideOffset is %f =offsetL is %f  top is %d", slideOffset, offsetL,top));
             }
         });
-        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 //        ObjectAnimator animator = ObjectAnimator.ofFloat(translationView,View.TRANSLATION_Y,0 ,dimen_);
 //        animator.setDuration(500);
 //        animator.addListener(new AnimatorListenerAdapter() {
