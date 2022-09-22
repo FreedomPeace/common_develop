@@ -12,10 +12,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import cn.com.codequality.R;
 
 /**
- * header_pic  just translationY up to  parent_top when  behavior state change from [state =STATE_COLLAPSED ] to [state =STATE_HALF_EXPANDED ]
+ * 1] header_pic  just translationY up to  parent_top when  behavior state change from [state =STATE_COLLAPSED ] to [state =STATE_HALF_EXPANDED ]
+ * 2】属性 isHeaderFixed2Top = TRUE   make header_pic can continue to setTranslationY
  */
 public class BottomSheetTest2Activity extends AppCompatActivity {
-
+    boolean isHeaderFixed2Top;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +76,7 @@ public class BottomSheetTest2Activity extends AppCompatActivity {
                 double arc = Math.atan(onHalfOffsetRatio);//
                 double offsetL = slideOffset / Math.tan(arc);
 
-                if (offsetL > 1) {
+                if (offsetL > 1 && isHeaderFixed2Top) {
                     offsetL = 1;
                 }
                 float translationY = (float) (-top * offsetL);
