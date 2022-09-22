@@ -11,6 +11,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import cn.com.codequality.R;
 
+/**
+ * header_pic  just translationY up to  parent_top when  behavior state change from [state =STATE_COLLAPSED ] to [state =STATE_HALF_EXPANDED ]
+ */
 public class BottomSheetTest2Activity extends AppCompatActivity {
 
     @Override
@@ -26,66 +29,80 @@ public class BottomSheetTest2Activity extends AppCompatActivity {
         initViewPage2AndTabLayout();
     }
 
-    View translationView;
-    int currentState;
-    float preTranslationY;
+    float onHalfOffsetRatio;
 
     private void initViewPage2AndTabLayout() {
         TestFragment testFragment = (TestFragment) getSupportFragmentManager().findFragmentById(R.id.sheet);
-        translationView = findViewById(R.id.header_pic);
+        View headerPic = findViewById(R.id.header_pic);
 
-        View view = testFragment.getView();
+        final View behaviorView = testFragment.getView();
 
-        BottomSheetBehavior<View> sheetBehavior = BottomSheetBehavior.from(view);
-        float halfExpandedRatio = sheetBehavior.getHalfExpandedRatio();
+        final BottomSheetBehavior<View> sheetBehavior = BottomSheetBehavior.from(behaviorView);
 
-        View contentView = findViewById(R.id.content);
-        contentView.post(new Runnable() {
+
+        final View slidingContainerView = findViewById(R.id.content);
+
+        behaviorView.post(new Runnable() {
             @Override
             public void run() {
-                int height = contentView.getHeight();
-                int peekHeight = (int) (height * (1 - halfExpandedRatio));
-                translationView.getLayoutParams().height = peekHeight;
-                sheetBehavior.setPeekHeight(peekHeight);
+                int peekHeight = sheetBehavior.getPeekHeight();
+                int containerViewHeight = slidingContainerView.getHeight();
+                onHalfOffsetRatio = getOnHalfOffsetRatio(sheetBehavior, peekHeight, containerViewHeight);
+                Log.d("ppp", String.format("peekHeight is %d ；containerViewHeight is %d", peekHeight, containerViewHeight));
+                headerPic.getLayoutParams().height = peekHeight;
+//                sheetBehavior.setPeekHeight(peekHeight);
             }
         });
+
         sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//                public static final int STATE_DRAGGING = 1;
+//                public static final int STATE_SETTLING = 2;
+//                public static final int STATE_EXPANDED = 3;
+//                public static final int STATE_COLLAPSED = 4;
+//                public static final int STATE_HIDDEN = 5;
+//                public static final int STATE_HALF_EXPANDED = 6;
 //                if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
-//                    translationView.setTranslationY(dimen_);
+//                    headerPic.setTranslationY(dimen_);
 //                }
                 Log.d("ppp", String.format("onStateChanged newState is %d", newState));
-//                currentState = newState;
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                int top = translationView.getTop();
-                double arc = Math.atan(halfExpandedRatio-0.2f);//arc
+                float top = headerPic.getTop();//
+                double arc = Math.atan(onHalfOffsetRatio);//
                 double offsetL = slideOffset / Math.tan(arc);
 
-                if (offsetL>1) {
+                if (offsetL > 1) {
                     offsetL = 1;
                 }
                 float translationY = (float) (-top * offsetL);
-//                ObjectAnimator.ofFloat(translationView,View.TRANSLATION_Y,preTranslationY,translationY)
+//                ObjectAnimator.ofFloat(headerPic,View.TRANSLATION_Y,preTranslationY,translationY)
 //                        .setDuration(0).start();
 //                preTranslationY = translationY;
-                translationView.setTranslationY(translationY);
-                Log.d("ppp", String.format(" slideOffset is %f =offsetL is %f  top is %d", slideOffset, offsetL,top));
+                headerPic.setTranslationY(translationY);
+                Log.d("ppp", String.format(" slideOffset is %f =offsetL is %f  top is %f onHalfOffsetRatio is %f", slideOffset, offsetL, top, onHalfOffsetRatio));
             }
         });
 //        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//        ObjectAnimator animator = ObjectAnimator.ofFloat(translationView,View.TRANSLATION_Y,0 ,dimen_);
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(headerPic,View.TRANSLATION_Y,0 ,dimen_);
 //        animator.setDuration(500);
 //        animator.addListener(new AnimatorListenerAdapter() {
 //            @Override
 //            public void onAnimationEnd(Animator animation) {
 //                super.onAnimationEnd(animation);
-//                Log.d("ppp", String.format("onAnimationEnd topY %d testFragment topY %d", translationView.getTop(),view.getTop()));
+//                Log.d("ppp", String.format("onAnimationEnd topY %d testFragment topY %d", headerPic.getTop(),behaviorView.getTop()));
 //            }
 //        });
 //        animator.start();
+    }
+
+    //适用于  app:behavior_fitToContents="false"
+    private float getOnHalfOffsetRatio(BottomSheetBehavior<View> sheetBehavior, int peekHeight, int containerViewHeight) {
+        int collapsedOffset = containerViewHeight - peekHeight;//要销毁的总高度
+        int halfExpandedOffset = (int) (containerViewHeight * (1 - sheetBehavior.getHalfExpandedRatio()));//半展开时候，已经销毁的高度。
+        return (float) (collapsedOffset - halfExpandedOffset) / (float) collapsedOffset;
     }
 }
