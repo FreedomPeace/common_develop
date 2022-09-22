@@ -25,9 +25,14 @@ public class BottomSheetTest2Activity extends AppCompatActivity {
     }
 
     @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        initViewPage2AndTabLayout();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        initViewPage2AndTabLayout();
     }
 
     float onHalfOffsetRatio;
