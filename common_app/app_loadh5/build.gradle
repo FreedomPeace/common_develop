@@ -25,7 +25,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation project(path: ':common_app:qrmodule')
+    implementation project(path: ':library:qrmodule')
     testImplementation 'junit:junit:4.12'
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.4'

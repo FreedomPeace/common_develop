@@ -5,6 +5,6 @@ include ':jawaBasic'
 rootProject.name='common_develop'
 include ':app_develop_kit',
         'common_app:common_function',
-        'common_app:qrmodule'
+        'library:qrmodule'
 include ':lib-kotlin-learn'
 include ':common_app:rxjava'
