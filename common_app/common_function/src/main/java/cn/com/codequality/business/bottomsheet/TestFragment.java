@@ -13,21 +13,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bankcomm.ui.adapter.intfc.BGAOnRVItemClickListener;
-import com.bankcomm.ui.view.dialogs.shade.IShade;
-import com.bankcomm.ui.view.dialogs.shade.ProgressShadeImp;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
-import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.com.codequality.R;
 import cn.com.codequality.business.chat.ChatAdapter;
-import cn.com.codequality.business.chat.detail.ChatDetailFragment;
 import cn.com.codequality.data.chat.bean.Chat;
 
 /**
@@ -37,21 +32,14 @@ import cn.com.codequality.data.chat.bean.Chat;
 public class TestFragment extends Fragment {
     public TextView testJsonView;
     private ChatAdapter mChatAdapter;
-    private View mNoDataView;
     public  RecyclerView mChatList;
-    private IShade mShade;
-    private ChatDetailFragment chatDetailFragment;
     public static final String TAG = "TestFragment ==";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mShade = new ProgressShadeImp(getActivity());
         View view = inflater.inflate(R.layout.fragment_test, container, false);
-        mNoDataView = view.findViewById(R.id.no_data_view);
         mChatList = view.findViewById(R.id.chat_list);
         testJsonView = view.findViewById(R.id.test_json);
-
-        chatDetailFragment = new ChatDetailFragment();
 
         testJsonView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,22 +53,14 @@ public class TestFragment extends Fragment {
         List<Chat> data = getData();
         mChatAdapter.setData(data);
 
-        mChatAdapter.setOnRVItemClickListener(new BGAOnRVItemClickListener() {
-            @Override
-            public void onRVItemClick(ViewGroup parent, View itemView, int position) {
-                Toast.makeText(getContext(), data.get(position).getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        mChatAdapter.setOnRVItemClickListener((parent, itemView, position) -> Toast.makeText(getContext(), data.get(position).getMessage(), Toast.LENGTH_SHORT).show());
         mChatList.setAdapter(mChatAdapter);
 
-        RefreshLayout refreshLayout = (RefreshLayout)view.findViewById(R.id.refreshLayout);
+        RefreshLayout refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader(new ClassicsHeader(getContext()));
         refreshLayout.setRefreshFooter(new ClassicsFooter(getContext()));
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(RefreshLayout refreshlayout) {
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
-            }
+        refreshLayout.setOnRefreshListener(refreshlayout -> {
+            refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override

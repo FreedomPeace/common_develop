@@ -45,12 +45,4 @@
             android:layout_height="wrap_content"/>
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/no_data_view"
-        android:text="@string/no_chat_data"
-        android:textColor="@android:color/black"
-        android:visibility="gone"
-        />
 </androidx.constraintlayout.widget.ConstraintLayout>

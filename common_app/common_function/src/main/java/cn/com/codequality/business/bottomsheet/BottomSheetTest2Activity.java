@@ -56,7 +56,6 @@ public class BottomSheetTest2Activity extends AppCompatActivity {
                 onHalfOffsetRatio = getOnHalfOffsetRatio(sheetBehavior, peekHeight, containerViewHeight);
                 Log.d("ppp", String.format("peekHeight is %d ；containerViewHeight is %d", peekHeight, containerViewHeight));
                 headerPic.getLayoutParams().height = peekHeight;
-//                sheetBehavior.setPeekHeight(peekHeight);
             }
         });
 
