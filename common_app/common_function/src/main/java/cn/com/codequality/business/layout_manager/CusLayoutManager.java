@@ -37,7 +37,28 @@ public class CusLayoutManager extends RecyclerView.LayoutManager {
 
         fill(recycler, state);
     }
-
+    private float mSelectedScale = 0.8f;
+    private void animationItemView(View child) {
+        int childWidth = child.getWidth() - child.getPaddingLeft() - child.getPaddingRight();
+        int childHeight = child.getHeight() - child.getPaddingTop() - child.getPaddingBottom();
+        int width = getWidth();
+        if(width <= child.getWidth()){
+//            return super.drawChild(canvas, child, drawingTime);
+        }
+        int pivot = (width - childWidth)/2;
+        int x = child.getLeft();
+        float scale , alpha;
+        alpha = 1 - 0.6f*Math.abs(x - pivot)/pivot;
+        if(x <= pivot){
+            scale = 2*(1-mSelectedScale)*(x+childWidth) / (width+childWidth) + mSelectedScale;
+        }else{
+            scale = 2*(1-mSelectedScale)*(width - x) / (width+childWidth) + mSelectedScale;
+        }
+        child.setPivotX(childWidth / 2);
+        child.setPivotY(childHeight*scale/2);
+        child.setScaleX(scale);
+        child.setScaleY(scale);
+    }
 
     private int getTopOffsetForView(int viewCentreX) {
         double s = screenWidth / 2;
@@ -92,9 +113,9 @@ public class CusLayoutManager extends RecyclerView.LayoutManager {
             }
             View view = recycler.getViewForPosition(position);
             addView(view);
-
             layoutChildView(position, viewWidth, view);
 
+            animationItemView(view);
         }
 
         for (RecyclerView.ViewHolder viewHolder : recycler.getScrapList()) {
