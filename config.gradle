@@ -1,8 +1,8 @@
 ext {
     // Sdk and tools
-    minSdkVersion = 21
-    targetSdkVersion = 29
-    compileSdkVersion = 29
+    minSdkVersion = 24
+    targetSdkVersion = 33
+    compileSdkVersion = 33
 
     // App dependenciese
     supportLibraryVersion = '28.0.0'

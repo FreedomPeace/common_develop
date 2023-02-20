@@ -35,7 +35,6 @@ public class ExampleInstrumentedTest {
         Request request = new Request.Builder().addHeader("content","txt")
                 .put(RequestBody.create(MediaType.parse("txet"),"i am it boy ")).build();
         Call call = okHttpClient.newCall(request);
-        call.
     }
 }
 

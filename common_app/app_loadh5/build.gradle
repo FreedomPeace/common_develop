@@ -1,12 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 
     defaultConfig {
+        multiDexEnabled true
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.example.app_loadh5"
-        minSdkVersion 21
-        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 

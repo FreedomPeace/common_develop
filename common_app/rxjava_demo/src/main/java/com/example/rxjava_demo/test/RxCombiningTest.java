@@ -27,11 +27,11 @@ public class RxCombiningTest {
 
         Integer[] numbers = {1, 2, 3, 4, 5, 6};
         String[] letters = {"a", "b", "c", "d", "e", "f", "g"};
-//        combineLatest(numbers, letters);
-//        switch2();
-//        startWith();
+        combineLatest(numbers, letters);
+        switch2();
+        startWith();
         merge(s1, s2);
-//        combine3();
+        combine3();
         zip();
 //        System.out.println(1_500);
     }
