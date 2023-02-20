@@ -27,6 +27,7 @@ class HomeFragment : Fragment() {
         ) { text: String? -> textView.text = text }
 //        homeViewModel.getFreedomPeaceInfo()
         homeViewModel.getUsers(context)
+        homeViewModel.getUser3()
 //        homeViewModel.getReposInfo(context)
         return root
     }

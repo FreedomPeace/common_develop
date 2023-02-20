@@ -15,6 +15,9 @@ interface GitHubApi {
     @get:GET("/users")
     val users: Single<List<UserResponse>>
 
+    @GET("/users")
+    suspend fun users2(): List<UserResponse>
+
     @GET("/repos/{user}/bootstrap")
     fun getReposInfo(@Path("user") username: String?): Single<UserResponse>
 }

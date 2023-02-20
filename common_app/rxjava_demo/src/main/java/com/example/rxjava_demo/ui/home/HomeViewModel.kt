@@ -14,12 +14,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.functions.BiConsumer
-import io.reactivex.rxjava3.functions.Consumer
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Objects
+import kotlinx.coroutines.withContext
 
 class HomeViewModel : ViewModel() {
 
@@ -84,6 +82,21 @@ class HomeViewModel : ViewModel() {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
             .subscribe()
+    }
+    fun getUser3(): Unit {
+        viewModelScope.launch {
+            getDocs()
+        }
+    }
+   private suspend fun getDocs() {                             // Dispatchers.Main
+        val result = get("https://developer.android.com") // Dispatchers.IO for `get`
+                                             // Dispatchers.Main
+        Log.d(TAG, "fetchDocs: $result")
+    }
+
+    suspend fun get(url: String) = withContext(Dispatchers.IO) {
+        Log.d(TAG, "getDocs: ${Thread.currentThread().name}")
+        url
     }
 
     companion object {
