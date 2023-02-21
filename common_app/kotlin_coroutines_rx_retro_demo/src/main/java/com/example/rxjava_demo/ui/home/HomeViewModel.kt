@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import launch
 
 class HomeViewModel : ViewModel() {
 
@@ -31,9 +32,12 @@ class HomeViewModel : ViewModel() {
         get() = mStr
 
     fun getFreedomPeaceInfo() {
+
+
+        //todo how to deal with exception
         //通过coroutines 实现异步获取数据
-        viewModelScope.launch {
-            //todo how to deal with exception
+        launch{
+
             async {
                 Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
                 val response = getFreedomPeace2(gitHubApi)
