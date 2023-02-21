@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+class ViewModelExt
 private val handler = CoroutineExceptionHandler { _, exception ->
     Log.d("azp", "Default CoroutineExceptionHandler got $exception")
 }

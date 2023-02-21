@@ -2,6 +2,7 @@ package com.example.rxjava_demo.ui.home
 
 import GlobalTag.TAG_ME
 import Utils.toPrettyFormat
+import ViewModelExt
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -19,6 +20,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import launch
 
+/**
+ * todo how to deal with exception [ViewModelExt.kt]
+ */
 class HomeViewModel : ViewModel() {
 
     private val mStr: MutableLiveData<String> = MutableLiveData()
@@ -35,7 +39,6 @@ class HomeViewModel : ViewModel() {
     fun getFreedomPeaceInfo() {
 
 
-        //todo how to deal with exception
         //通过coroutines 实现异步获取数据
         launch{
 
