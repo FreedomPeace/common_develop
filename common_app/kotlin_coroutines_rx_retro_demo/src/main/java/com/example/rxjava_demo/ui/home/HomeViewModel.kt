@@ -1,5 +1,6 @@
 package com.example.rxjava_demo.ui.home
 
+import GlobalTag.TAG_ME
 import Utils.toPrettyFormat
 import android.content.Context
 import android.util.Log
@@ -39,31 +40,33 @@ class HomeViewModel : ViewModel() {
         launch{
 
             async {
-                Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
+                Log.d(TAG_ME, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
                 val response = getFreedomPeace2(gitHubApi)
-                Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
+                Log.d(TAG_ME, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
 //                delay(5000)
                 mStr.value = toPrettyFormat(response)
+                throw  NullPointerException()
             }
 
             async {
-                Log.d(TAG, "getReposInfo: ${Thread.currentThread().name}")
+                Log.d(TAG_ME, "getReposInfo: ${Thread.currentThread().name}")
 //                delay(2000)
                 getReposInfo2(gitHubApi)
-                Log.d(TAG, "getReposInfo: ${Thread.currentThread().name}")
+                Log.d(TAG_ME, "getReposInfo: ${Thread.currentThread().name}")
+                throw  IndexOutOfBoundsException()
             }
         }
-        Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name} end")
+        Log.d(TAG_ME, "getFreedomPeaceInfo: ${Thread.currentThread().name} end")
     }
 
     private suspend fun getFreedomPeace2(gitHubApi: GitHubApi): UserResponse {
         return gitHubApi.freedomPeace2()
-            .also { Log.d(TAG, "getFreedomPeaceInfo: ${toPrettyFormat(it)}") }
+            .also { Log.d(TAG_ME, "getFreedomPeaceInfo: ${toPrettyFormat(it)}") }
     }
 
     private suspend fun getReposInfo2(gitHubApi: GitHubApi): UserResponse {
         return gitHubApi.getReposInfo2("twbs")
-            .also { Log.d(TAG, "getReposInfo2: ${toPrettyFormat(it)}") }
+            .also { Log.d(TAG_ME, "getReposInfo2: ${toPrettyFormat(it)}") }
     }
 
     fun getReposInfo(username: String? = "twbs") {
@@ -71,14 +74,14 @@ class HomeViewModel : ViewModel() {
             .doOnSuccess { o: UserResponse? ->
                 val prettyFormat = toPrettyFormat(o)
                 mStr.value = prettyFormat
-                Log.d(TAG, prettyFormat)
+                Log.d(TAG_ME, prettyFormat)
             }.doOnError { t: Throwable -> mStr.setValue(t.message) }.subscribe()
     }
 
     fun getUsers(context: Context?) {
         gitHubApi.users.observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess { s: List<UserResponse> ->
-                Log.d(TAG, s.size.toString() + "")
+                Log.d(TAG_ME, s.size.toString() + "")
                 for (e in s) {
                     val prettyFormat = toPrettyFormat(e)
                     mStr.value = prettyFormat
@@ -106,15 +109,15 @@ class HomeViewModel : ViewModel() {
     private suspend fun getDocs() {                             // Dispatchers.Main
         val result = get("https://developer.android.com") // Dispatchers.IO for `get`
         // Dispatchers.Main
-        Log.d(TAG, "fetchDocs: $result")
+        Log.d(TAG_ME, "fetchDocs: $result")
     }
 
     suspend fun get(url: String) = withContext(Dispatchers.IO) {
-        Log.d(TAG, "getDocs: ${Thread.currentThread().name}")
+        Log.d(TAG_ME, "getDocs: ${Thread.currentThread().name}")
         url
     }
 
     companion object {
-        const val TAG = "ddd"
+
     }
 }
