@@ -1,5 +1,5 @@
 include ':common_app:app_loadh5'
-include ':common_app:rxjava_demo'
+include ':common_app:kotlin_coroutines_rx_retro_demo'
 
 include ':common_app:jawaBasic'
 rootProject.name='common_develop'
@@ -8,4 +8,4 @@ include ':app_develop_kit',
         'library:qrmodule'
 include ':common_app:lib-kotlin-learn'
 include ':common_app:rxjava'
-include ':common_app:android-kotlin-rxjava'
+include ':common_app:android_kotlin_bluetooth'
