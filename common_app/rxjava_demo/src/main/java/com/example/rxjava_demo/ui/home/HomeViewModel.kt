@@ -1,5 +1,6 @@
 package com.example.rxjava_demo.ui.home
 
+import Utils.toPrettyFormat
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -10,19 +11,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.rxjava_demo.bean.UserResponse
 import com.example.rxjava_demo.github.GitHubApi
 import com.example.rxjava_demo.github.RetrofitManager
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeViewModel : ViewModel() {
 
     private val mStr: MutableLiveData<String> = MutableLiveData()
-
+    private val gitHubApi: GitHubApi = RetrofitManager.instance.retrofit.create(
+        GitHubApi::class.java
+    )
     init {
         mStr.value = "This is home fragment"
     }
@@ -31,44 +31,47 @@ class HomeViewModel : ViewModel() {
         get() = mStr
 
     fun getFreedomPeaceInfo() {
-        val gitHubApi: GitHubApi = RetrofitManager.instance.retrofit.create(
-            GitHubApi::class.java
-        )
-//        gitHubApi.freedomPeace
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe(
-//            Consumer<UserResponse> {
-//                val prettyFormat = toPrettyFormat(it)
-//                mStr.value = prettyFormat
-//            }
-//            , Consumer {  mStr.value = it.message }
-//        )
         //通过coroutines 实现异步获取数据
         viewModelScope.launch {
-            Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
-            val response = gitHubApi.freedomPeace2()
-            delay(2000)
-            Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
-            mStr.value = toPrettyFormat(response)
+            //todo how to deal with exception
+            async {
+                Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
+                val response = getFreedomPeace2(gitHubApi)
+                Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name}")
+//                delay(5000)
+                mStr.value = toPrettyFormat(response)
+            }
+
+            async {
+                Log.d(TAG, "getReposInfo: ${Thread.currentThread().name}")
+//                delay(2000)
+                getReposInfo2(gitHubApi)
+                Log.d(TAG, "getReposInfo: ${Thread.currentThread().name}")
+            }
         }
+        Log.d(TAG, "getFreedomPeaceInfo: ${Thread.currentThread().name} end")
     }
 
-    fun getReposInfo(context: Context?, username: String? = "twbs") {
-        val gitHubApi: GitHubApi = RetrofitManager.instance.retrofit.create(
-            GitHubApi::class.java
-        )
+    private suspend fun getFreedomPeace2(gitHubApi: GitHubApi): UserResponse {
+        return gitHubApi.freedomPeace2()
+            .also { Log.d(TAG, "getFreedomPeaceInfo: ${toPrettyFormat(it)}") }
+    }
+
+    private suspend fun getReposInfo2(gitHubApi: GitHubApi): UserResponse {
+        return gitHubApi.getReposInfo2("twbs")
+            .also { Log.d(TAG, "getReposInfo2: ${toPrettyFormat(it)}") }
+    }
+
+    fun getReposInfo(username: String? = "twbs") {
         gitHubApi.getReposInfo(username).observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess { o: UserResponse? ->
-            val prettyFormat = toPrettyFormat(o)
-            mStr.value = prettyFormat
-            Log.d(TAG, prettyFormat)
-        }.doOnError { t: Throwable -> mStr.setValue(t.message) }.subscribe()
+                val prettyFormat = toPrettyFormat(o)
+                mStr.value = prettyFormat
+                Log.d(TAG, prettyFormat)
+            }.doOnError { t: Throwable -> mStr.setValue(t.message) }.subscribe()
     }
 
     fun getUsers(context: Context?) {
-        val gitHubApi: GitHubApi = RetrofitManager.instance.retrofit.create(
-            GitHubApi::class.java
-        )
         gitHubApi.users.observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess { s: List<UserResponse> ->
                 Log.d(TAG, s.size.toString() + "")
@@ -83,14 +86,22 @@ class HomeViewModel : ViewModel() {
             }
             .subscribe()
     }
+    fun getUser2(x: Context?): Unit {
+        viewModelScope.launch {
+            val users2 = gitHubApi.users2()
+            mStr.value = toPrettyFormat(users2[0])
+        }
+    }
+
     fun getUser3(): Unit {
         viewModelScope.launch {
             getDocs()
         }
     }
-   private suspend fun getDocs() {                             // Dispatchers.Main
+
+    private suspend fun getDocs() {                             // Dispatchers.Main
         val result = get("https://developer.android.com") // Dispatchers.IO for `get`
-                                             // Dispatchers.Main
+        // Dispatchers.Main
         Log.d(TAG, "fetchDocs: $result")
     }
 
@@ -101,12 +112,5 @@ class HomeViewModel : ViewModel() {
 
     companion object {
         const val TAG = "ddd"
-        fun toPrettyFormat(json: Any?): String {
-            val gson = Gson()
-            val jsonParser = JsonParser()
-            val jsonObject = jsonParser.parse(gson.toJson(json)).asJsonObject
-            val gson2 = GsonBuilder().setPrettyPrinting().create()
-            return gson2.toJson(jsonObject)
-        }
     }
 }

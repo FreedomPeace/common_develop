@@ -20,4 +20,6 @@ interface GitHubApi {
 
     @GET("/repos/{user}/bootstrap")
     fun getReposInfo(@Path("user") username: String?): Single<UserResponse>
+    @GET("/repos/{user}/bootstrap")
+   suspend fun getReposInfo2(@Path("user") username: String?): UserResponse
 }
