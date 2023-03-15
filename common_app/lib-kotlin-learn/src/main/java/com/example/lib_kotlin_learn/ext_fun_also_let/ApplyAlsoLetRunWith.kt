@@ -1,6 +1,6 @@
-package com.example.lib_kotlin_learn
+package com.example.lib_kotlin_learn.ext_fun_also_let
 
-import java.util.*
+import java.util.Locale
 
 class ApplyAlsoLetRunWith {
     var str : String = "abc"

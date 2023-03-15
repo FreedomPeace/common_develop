@@ -1,4 +1,4 @@
-package com.example.lib_kotlin_learn
+package com.example.lib_kotlin_learn.class_object
 
 
 

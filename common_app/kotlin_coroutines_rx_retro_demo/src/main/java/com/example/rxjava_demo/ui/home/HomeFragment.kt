@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.rxjava_demo.databinding.FragmentHomeBinding
-import com.example.rxjava_demo.ui.home.HomeViewModel
 
 class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding? = null
@@ -24,8 +23,8 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(
             viewLifecycleOwner
         ) { text: String? -> textView.text = text }
-        homeViewModel.getFreedomPeaceInfo()
-//        homeViewModel.getUsers(context)
+//        homeViewModel.getFreedomPeaceInfo()
+        homeViewModel.getFirstUser()
 //        homeViewModel.getUser3()
 //        homeViewModel.getReposInfo(context)
         return root

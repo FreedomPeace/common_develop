@@ -1,11 +1,12 @@
 package com.example.lib_kotlin_learn
 
+import com.example.lib_kotlin_learn.ext_fun_also_let.ApplyAlsoLetRunWith
 import org.junit.Before
 import org.junit.Test
 
 class ApplyAlsoLetRunWithTest {
 
-    private lateinit var a:ApplyAlsoLetRunWith ;
+    private lateinit var a: ApplyAlsoLetRunWith;
 
     @Before
     fun setUp() {

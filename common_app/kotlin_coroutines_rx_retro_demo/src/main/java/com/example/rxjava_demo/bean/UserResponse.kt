@@ -2,9 +2,9 @@ package com.example.rxjava_demo.bean
 
 import com.google.gson.annotations.SerializedName
 
-class UserResponse {
-    @SerializedName("gists_url")
-    val gistsUrl: String? = null
+data class UserResponse( @SerializedName("gists_url")
+                         val gistsUrl: String? = null) {
+
 
     @SerializedName("repos_url")
     val reposUrl: String? = null

@@ -1,4 +1,4 @@
-package com.example.lib_kotlin_learn
+package com.example.lib_kotlin_learn.getset
 
 class GetSet {
     var age: Int = 1

@@ -1,5 +1,6 @@
 package com.example.lib_kotlin_learn
 
+import com.example.lib_kotlin_learn.getset.GetSet
 import org.junit.Before
 import org.junit.Test
 

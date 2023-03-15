@@ -1,3 +1,5 @@
+package com.example.rxjava_demo.extension
+
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
